@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+env/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+dist/
+frontend_dist/
+
+# Build artifacts
+build/
+*.spec
+*.exe
+*.msi
+installer_output/
+release/
+
+# Local AI models (large binaries)
+*.onnx
+*.zip
+*.npy
+models/**/*.onnx
+models/**/*.zip
+
+# Local data, logs and releases
+*.db
+*.db-wal
+*.db-shm
+data/
+logs/
+backups/
+reports/
+facenexa/
+facenexa_safety_backup_*/
+test_output/
+
+# Secrets and environment
+.env
+.env.*
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

@@ -39,6 +39,7 @@ Face Nexa is a self-contained desktop application that marks student attendance 
 .
 ├── app.py                     # Desktop entry point: FastAPI server + PyWebview window
 ├── build.py                   # Builds React, then freezes app.py into dist/FaceNexa.exe
+├── download_models.py         # Downloads + verifies the InsightFace ONNX pack
 ├── installer.iss              # Inno Setup script for FaceNexaSetup.exe
 ├── test_face.jpg              # Sample image for manual recognition tests
 ├── backend/
@@ -86,7 +87,12 @@ pip install -r backend\requirements.txt
 cd frontend
 npm install
 cd ..
+
+# 3. Download the AI models (~290 MB, needed for live face detection)
+python download_models.py
 ```
+
+`download_models.py` is idempotent and verifies checksums; it only needs internet once. Skip it if you only plan to use enrollment and daily check-in via `face_recognition`.
 
 Run the backend and frontend in two terminals:
 
@@ -124,7 +130,7 @@ python build.py
 
 This runs `npm run build` and then PyInstaller, producing **`dist/FaceNexa.exe`**. Compile `installer.iss` with [Inno Setup](https://jrsoftware.org/isinfo.php) to generate `FaceNexaSetup.exe` with Start Menu and optional desktop shortcuts.
 
-Large model files are intentionally not tracked by Git. For the optional AI pipeline, place the InsightFace `buffalo_l` ONNX files under `models/insightface/models/buffalo_l/` (or point the model manager at your own models).
+Large model files are intentionally not tracked by Git. Run `python download_models.py` before packaging to place the InsightFace `buffalo_l` ONNX files under `models/insightface/models/buffalo_l/`. The EXE is built without the models, so install them on each machine where the app will run (or point the model manager at your own models).
 
 ---
 
@@ -176,7 +182,7 @@ cd frontend; npm run lint; npm run build
 | Frontend shows "Backend offline" | Start the API (`uvicorn backend.main:app --reload`) |
 | `npm run dev` blocked by PowerShell policy | Use `npm.cmd run dev` |
 | Camera will not start | Confirm no other app is using the webcam, then call `POST /api/camera/start` |
-| "AI LOADING" badge persists | Models are not installed yet — place ONNX files under `models/insightface/` and restart |
+| "AI LOADING" badge persists | Models are not installed yet — run `python download_models.py` and restart |
 | Database issues | Remove `~/.face-nexa/facenexa.db`; tables are recreated on next start |
 
 ---
